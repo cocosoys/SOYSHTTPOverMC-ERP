@@ -1,0 +1,72 @@
+<template>
+  <div class="app-container" style="padding:0" v-loading="loading">
+    <config-top-bar title="HTTPS 设置" file="gateway/https.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
+    <div style="padding:16px 20px; max-width:720px">
+      <el-card shadow="never">
+        <div slot="header">基础</div>
+        <el-form label-width="180px" size="small">
+          <el-form-item label="启用 HTTPS">
+            <el-switch v-model="model.enabled" />
+            <div class="hint">嗅探到 TLS 首包后动态挂 SslHandler，MC / 明文 HTTP / HTTPS 三协议共存于同端口。</div>
+          </el-form-item>
+          <el-form-item label="主机名">
+            <el-input v-model="model.host" placeholder="自签 CN/SAN 与 426 Location 使用，留空=127.0.0.1" />
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <el-card shadow="never" style="margin-top:14px">
+        <div slot="header">证书（优先级：keystore &gt; cert+key &gt; 自动自签）</div>
+        <el-form label-width="180px" size="small">
+          <el-form-item label="PEM 证书路径">
+            <el-input v-model="model.cert" placeholder="可选" />
+          </el-form-item>
+          <el-form-item label="PEM 私钥路径">
+            <el-input v-model="model.key" placeholder="可选，须 PKCS8" />
+          </el-form-item>
+          <el-form-item label="PKCS12 keystore">
+            <el-input v-model="model.keystore" placeholder="可选，优先于 cert/key" />
+          </el-form-item>
+          <el-form-item label="keystore 密码">
+            <el-input v-model="model['keystore-pass']" show-password />
+          </el-form-item>
+          <el-form-item label="私钥密码">
+            <el-input v-model="model['key-pass']" show-password />
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <el-card shadow="never" style="margin-top:14px">
+        <div slot="header">TLS 协议</div>
+        <el-form label-width="180px" size="small">
+          <el-form-item label="启用协议版本">
+            <el-checkbox-group v-model="model['enabled-protocols']">
+              <el-checkbox label="TLSv1.3" />
+              <el-checkbox label="TLSv1.2" />
+              <el-checkbox label="TLSv1.1" />
+              <el-checkbox label="TLSv1" />
+            </el-checkbox-group>
+            <div class="hint">留空=全开（JVM 不支持的自动跳过）。</div>
+          </el-form-item>
+          <el-form-item label="最低 TLS">
+            <el-select v-model="model['min-tls']" style="width:200px">
+              <el-option v-for="l in ['TLSv1','TLSv1.1','TLSv1.2','TLSv1.3']" :key="l" :label="l" :value="l" />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
+  </div>
+</template>
+
+<script>
+import configPage from '../mixins/configPage'
+import ConfigTopBar from '../components/ConfigTopBar.vue'
+
+export default {
+  name: 'SettingsGwHttps',
+  mixins: [configPage],
+  components: { ConfigTopBar },
+  data() { return { fileId: 'gw-https' } }
+}
+</script>
+
+<style scoped>.hint { font-size: 12px; color: #a8abb2; line-height: 1.5; }</style>

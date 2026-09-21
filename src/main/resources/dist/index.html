@@ -1,0 +1,184 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1"><meta name=renderer content=webkit><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel=icon href=favicon.ico><script src=./__SOYS_CONTEXT__.js></script><script src=/soys-auth.js></script><title>SOYSHTTPOverMC ERP</title><!--[if lt IE 11]><script>window.location.href='./html/ie.html';</script><![endif]--><style>html,
+    body,
+    #app {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+    }
+    .chromeframe {
+      margin: 0.2em 0;
+      background: #ccc;
+      color: #000;
+      padding: 0.2em 0;
+    }
+
+    #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999999;
+    }
+
+    #loader {
+      display: block;
+      position: relative;
+      left: 50%;
+      top: 50%;
+      width: 150px;
+      height: 150px;
+      margin: -75px 0 0 -75px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #FFF;
+      -webkit-animation: spin 2s linear infinite;
+      -ms-animation: spin 2s linear infinite;
+      -moz-animation: spin 2s linear infinite;
+      -o-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+      z-index: 1001;
+    }
+
+    #loader:before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #FFF;
+      -webkit-animation: spin 3s linear infinite;
+      -moz-animation: spin 3s linear infinite;
+      -o-animation: spin 3s linear infinite;
+      -ms-animation: spin 3s linear infinite;
+      animation: spin 3s linear infinite;
+    }
+
+    #loader:after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #FFF;
+      -moz-animation: spin 1.5s linear infinite;
+      -o-animation: spin 1.5s linear infinite;
+      -ms-animation: spin 1.5s linear infinite;
+      -webkit-animation: spin 1.5s linear infinite;
+      animation: spin 1.5s linear infinite;
+    }
+
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+
+    #loader-wrapper .loader-section {
+      position: fixed;
+      top: 0;
+      width: 51%;
+      height: 100%;
+      background: #7171C6;
+      z-index: 1000;
+      -webkit-transform: translateX(0);
+      -ms-transform: translateX(0);
+      transform: translateX(0);
+    }
+
+    #loader-wrapper .loader-section.section-left {
+      left: 0;
+    }
+
+    #loader-wrapper .loader-section.section-right {
+      right: 0;
+    }
+
+
+    .loaded #loader-wrapper .loader-section.section-left {
+      -webkit-transform: translateX(-100%);
+      -ms-transform: translateX(-100%);
+      transform: translateX(-100%);
+      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader-wrapper .loader-section.section-right {
+      -webkit-transform: translateX(100%);
+      -ms-transform: translateX(100%);
+      transform: translateX(100%);
+      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader {
+      opacity: 0;
+      -webkit-transition: all 0.3s ease-out;
+      transition: all 0.3s ease-out;
+    }
+
+    .loaded #loader-wrapper {
+      visibility: hidden;
+      -webkit-transform: translateY(-100%);
+      -ms-transform: translateY(-100%);
+      transform: translateY(-100%);
+      -webkit-transition: all 0.3s 1s ease-out;
+      transition: all 0.3s 1s ease-out;
+    }
+
+    .no-js #loader-wrapper {
+      display: none;
+    }
+
+    .no-js h1 {
+      color: #222222;
+    }
+
+    #loader-wrapper .load_title {
+      font-family: 'Open Sans';
+      color: #FFF;
+      font-size: 19px;
+      width: 100%;
+      text-align: center;
+      z-index: 9999999999999;
+      position: absolute;
+      top: 60%;
+      opacity: 1;
+      line-height: 30px;
+    }
+
+    #loader-wrapper .load_title span {
+      font-weight: normal;
+      font-style: italic;
+      font-size: 13px;
+      color: #FFF;
+      opacity: 0.5;
+    }</style><link href=static/css/chunk-libs.20020923.css rel=stylesheet><link href=static/css/app.67790cd8.css rel=stylesheet></head><body><div id=app><div id=loader-wrapper><div id=loader></div><div class="loader-section section-left"></div><div class="loader-section section-right"></div><div class=load_title>正在加载系统资源，请耐心等待</div></div></div><script>(function(e){function n(n){for(var t,r,f=n[0],o=n[1],h=n[2],d=0,b=[];d<f.length;d++)r=f[d],Object.prototype.hasOwnProperty.call(u,r)&&u[r]&&b.push(u[r][0]),u[r]=0;for(t in o)Object.prototype.hasOwnProperty.call(o,t)&&(e[t]=o[t]);i&&i(n);while(b.length)b.shift()();return a.push.apply(a,h||[]),c()}function c(){for(var e,n=0;n<a.length;n++){for(var c=a[n],t=!0,r=1;r<c.length;r++){var f=c[r];0!==u[f]&&(t=!1)}t&&(a.splice(n--,1),e=o(o.s=c[0]))}return e}var t={},r={runtime:0},u={runtime:0},a=[];function f(e){return o.p+"static/js/"+({}[e]||e)+"."+{"chunk-107cd1c1":"a49c0ef4","chunk-155f955b":"049fc1a1","chunk-1a214671":"7fa1e8ff","chunk-1a93286c":"89de7fac","chunk-23c932c4":"777cb264","chunk-2d0b68f8":"5fcc07e5","chunk-2d0f012d":"ddeb06bb","chunk-3738f2d0":"155179a3","chunk-45a2f0e6":"482f3b77","chunk-520e26cc":"57ad5a10","chunk-5307e3b3":"6e4bcbba","chunk-547f203a":"efd9330b","chunk-59a22878":"864abf8d","chunk-6eb3eb64":"771b96c3","chunk-76349688":"3623b090","chunk-79f8c5df":"3270d29a","chunk-8f381a4a":"1458ad30","chunk-a715fd9a":"0ec0fba3","chunk-bc81b8e6":"35135d9a","chunk-bebb6598":"0919061b","chunk-ceab5642":"2b689e54","chunk-daf7ee70":"1f3e0bf5","chunk-e66c093a":"860c2734","chunk-fc5e9c26":"4e8cc6c2"}[e]+".js"}function o(n){if(t[n])return t[n].exports;var c=t[n]={i:n,l:!1,exports:{}};return e[n].call(c.exports,c,c.exports,o),c.l=!0,c.exports}o.e=function(e){var n=[],c={"chunk-107cd1c1":1,"chunk-1a214671":1,"chunk-1a93286c":1,"chunk-23c932c4":1,"chunk-3738f2d0":1,"chunk-45a2f0e6":1,"chunk-520e26cc":1,"chunk-5307e3b3":1,"chunk-547f203a":1,"chunk-59a22878":1,"chunk-6eb3eb64":1,"chunk-76349688":1,"chunk-79f8c5df":1,"chunk-a715fd9a":1,"chunk-bebb6598":1,"chunk-daf7ee70":1,"chunk-e66c093a":1,"chunk-fc5e9c26":1};r[e]?n.push(r[e]):0!==r[e]&&c[e]&&n.push(r[e]=new Promise((function(n,c){for(var t="static/css/"+({}[e]||e)+"."+{"chunk-107cd1c1":"0933fa64","chunk-155f955b":"31d6cfe0","chunk-1a214671":"21afbd16","chunk-1a93286c":"13b00c05","chunk-23c932c4":"1a7f1690","chunk-2d0b68f8":"31d6cfe0","chunk-2d0f012d":"31d6cfe0","chunk-3738f2d0":"17fbdb6b","chunk-45a2f0e6":"4e9a1b31","chunk-520e26cc":"d8d316e1","chunk-5307e3b3":"0432c861","chunk-547f203a":"ef06c8a7","chunk-59a22878":"1a7f1690","chunk-6eb3eb64":"ba38ca0f","chunk-76349688":"eb1f4306","chunk-79f8c5df":"bbc9fa95","chunk-8f381a4a":"31d6cfe0","chunk-a715fd9a":"67acdda1","chunk-bc81b8e6":"31d6cfe0","chunk-bebb6598":"46235db7","chunk-ceab5642":"31d6cfe0","chunk-daf7ee70":"abb60843","chunk-e66c093a":"1ff7d172","chunk-fc5e9c26":"85e8da2e"}[e]+".css",u=o.p+t,a=document.getElementsByTagName("link"),f=0;f<a.length;f++){var h=a[f],d=h.getAttribute("data-href")||h.getAttribute("href");if("stylesheet"===h.rel&&(d===t||d===u))return n()}var b=document.getElementsByTagName("style");for(f=0;f<b.length;f++){h=b[f],d=h.getAttribute("data-href");if(d===t||d===u)return n()}var i=document.createElement("link");i.rel="stylesheet",i.type="text/css",i.onload=n,i.onerror=function(n){var t=n&&n.target&&n.target.src||u,a=new Error("Loading CSS chunk "+e+" failed.\n("+t+")");a.code="CSS_CHUNK_LOAD_FAILED",a.request=t,delete r[e],i.parentNode.removeChild(i),c(a)},i.href=u;var k=document.getElementsByTagName("head")[0];k.appendChild(i)})).then((function(){r[e]=0})));var t=u[e];if(0!==t)if(t)n.push(t[2]);else{var a=new Promise((function(n,c){t=u[e]=[n,c]}));n.push(t[2]=a);var h,d=document.createElement("script");d.charset="utf-8",d.timeout=120,o.nc&&d.setAttribute("nonce",o.nc),d.src=f(e);var b=new Error;h=function(n){d.onerror=d.onload=null,clearTimeout(i);var c=u[e];if(0!==c){if(c){var t=n&&("load"===n.type?"missing":n.type),r=n&&n.target&&n.target.src;b.message="Loading chunk "+e+" failed.\n("+t+": "+r+")",b.name="ChunkLoadError",b.type=t,b.request=r,c[1](b)}u[e]=void 0}};var i=setTimeout((function(){h({type:"timeout",target:d})}),12e4);d.onerror=d.onload=h,document.head.appendChild(d)}return Promise.all(n)},o.m=e,o.c=t,o.d=function(e,n,c){o.o(e,n)||Object.defineProperty(e,n,{enumerable:!0,get:c})},o.r=function(e){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},o.t=function(e,n){if(1&n&&(e=o(e)),8&n)return e;if(4&n&&"object"===typeof e&&e&&e.__esModule)return e;var c=Object.create(null);if(o.r(c),Object.defineProperty(c,"default",{enumerable:!0,value:e}),2&n&&"string"!=typeof e)for(var t in e)o.d(c,t,function(n){return e[n]}.bind(null,t));return c},o.n=function(e){var n=e&&e.__esModule?function(){return e["default"]}:function(){return e};return o.d(n,"a",n),n},o.o=function(e,n){return Object.prototype.hasOwnProperty.call(e,n)},o.p="",o.oe=function(e){throw console.error(e),e};var h=window["webpackJsonp"]=window["webpackJsonp"]||[],d=h.push.bind(h);h.push=n,h=h.slice();for(var b=0;b<h.length;b++)n(h[b]);var i=d;c()})([]);</script><script src=static/js/chunk-elementUI.ef7743f1.js></script><script src=static/js/chunk-libs.b1db0e53.js></script><script src=static/js/app.9f7bbf91.js></script></body></html>
