@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="网关总开关" file="gateway/config.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:720px">
+﻿<template>
+  <config-layout title="网关总开关" file="gateway/config.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never">
         <el-form label-width="180px" size="small">
           <el-form-item label="启用安全网关">
@@ -18,18 +16,17 @@
           </el-form-item>
         </el-form>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsGwConfig',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() { return { fileId: 'gw-config' } }
 }
 </script>

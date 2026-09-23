@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="用户协议 (EULA)" file="EULA.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:720px">
+﻿<template>
+  <config-layout title="用户协议 (EULA)" file="EULA.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never">
         <el-alert type="info" :closable="false" style="margin-bottom:16px">
           根据 Mojang EULA，运行本插件代表您已接受 Minecraft EULA。此开关仅作记录，关闭时插件不会启用 Web 服务。
@@ -13,18 +11,17 @@
           </el-form-item>
         </el-form>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsEula',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() {
     return { fileId: 'eula' }
   }

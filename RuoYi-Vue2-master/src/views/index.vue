@@ -7,18 +7,15 @@
           欢迎回来，<b>{{ nickName || name }}</b>。这里是 SOYSHTTPOverMC 的 ERP 专属管理界面，
           提供用户权限、权限组与 X-API-KEY 的统一管理。
         </p>
-        <p>
-          <el-tag type="info" size="mini">数据存储</el-tag>
-          <span style="margin-left: 8px">权限 4 表 + APIKEY + 凭证元数据（YAML / SQLite / MySQL 双后端同构）</span>
-        </p>
       </el-col>
       <el-col :sm="24" :lg="8">
         <el-card shadow="hover" style="margin-top: 20px">
           <div slot="header"><b>快捷入口</b></div>
           <div style="line-height: 2.4">
-            <router-link to="/erp/user"><el-button type="primary" size="mini" plain icon="el-icon-user">用户列表</el-button></router-link>
-            <router-link to="/erp/group"><el-button type="success" size="mini" plain icon="el-icon-key">权限组列表</el-button></router-link>
-            <router-link to="/erp/apikey"><el-button type="warning" size="mini" plain icon="el-icon-lock">APIKEY 管理</el-button></router-link>
+            <el-button type="primary" size="mini" plain icon="el-icon-user" @click="go('/soyshttpovermcerp/user')">用户列表</el-button>
+            <el-button type="success" size="mini" plain icon="el-icon-key" @click="go('/soyshttpovermcerp/group')">权限组列表</el-button>
+            <el-button type="warning" size="mini" plain icon="el-icon-lock" @click="go('/soyshttpovermcerp/apikey')">APIKEY 管理</el-button>
+            <el-button type="info" size="mini" plain icon="el-icon-document" @click="go('/soyshttpovermcerp/lang')">语言管理</el-button>
           </div>
         </el-card>
       </el-col>
@@ -28,14 +25,20 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Index',
   computed: {
-    ...mapGetters([
-      'name',
-      'nickName'
-    ])
+    ...mapGetters(['name', 'nickName'])
+  },
+  methods: {
+    go(path) {
+      // wujie 模式：通知主应用跳；直接访问：子应用自己 router.push
+      if (window.__POWERED_BY_WUJIE__ && window.$wujie && window.$wujie.bus) {
+        window.$wujie.bus.$emit('router-push', path)
+      } else {
+        this.$router.push(path)
+      }
+    }
   }
 }
 </script>

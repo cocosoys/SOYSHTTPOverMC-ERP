@@ -115,3 +115,17 @@ export function loadConfigFile(file) {
 export function saveConfigFile(file, data) {
   return request({ url: '/erp/config/save', method: 'post', params: { file }, data })
 }
+
+/* ================= 语言包管理 ================= */
+export function listLangFiles() {
+  return request({ url: '/erp/lang/list', method: 'get' })
+}
+export function loadLangEntries(file) {
+  return request({ url: '/erp/lang/entries', method: 'get', params: { file } })
+}
+export function saveLangEntries(file, entries) {
+  return request({ url: '/erp/lang/save', method: 'post', params: { file }, data: entries })
+}
+export function loadConfigHelp(file) {
+  return request({ url: '/erp/config/help', method: 'get', params: { file } })
+}

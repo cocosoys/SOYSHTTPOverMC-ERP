@@ -1,9 +1,8 @@
 <template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="核心配置" file="config.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:960px">
+  <config-layout title="核心配置" file="config.yml" :dirty="dirty" :loading="loading" :saving="saving"
+    @reload="reload" @save="save">
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-upload">
         <div slot="header">数据贡献 (upload)</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="启用数据贡献">
@@ -16,7 +15,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-channel">
         <div slot="header">插件消息通道</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="channel">
@@ -26,7 +25,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-mc">
         <div slot="header">MC 服务器地址与端口</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="host">
@@ -49,7 +48,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-proxy">
         <div slot="header">群组服（BungeeCord / Velocity）</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="server-name">
@@ -61,7 +60,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-sniffer">
         <div slot="header">同端口 HTTP 嗅探器</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="启用嗅探">
@@ -86,7 +85,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-backend">
         <div slot="header">HTTP 后端传输模式</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="传输模式">
@@ -98,25 +97,30 @@
             </el-select>
           </el-form-item>
           <el-form-item label="netty-eventloop 线程数">
-            <el-input-number v-model="model['http-backend']['netty-eventloop'].threads" :min="1" />
+            <el-input-number v-model="model['http-backend']['netty-eventloop'].threads" :min="1"
+              :disabled="model['http-backend'].mode !== 'netty-eventloop'" />
           </el-form-item>
           <el-form-item label="memory-queue 队列容量">
-            <el-input-number v-model="model['http-backend']['memory-queue'].capacity" :min="1" />
+            <el-input-number v-model="model['http-backend']['memory-queue'].capacity" :min="1"
+              :disabled="model['http-backend'].mode !== 'memory-queue'" />
           </el-form-item>
           <el-form-item label="memory-queue worker 数">
-            <el-input-number v-model="model['http-backend']['memory-queue'].workers" :min="1" />
+            <el-input-number v-model="model['http-backend']['memory-queue'].workers" :min="1"
+              :disabled="model['http-backend'].mode !== 'memory-queue'" />
           </el-form-item>
           <el-form-item label="standalone 监听地址">
-            <el-input v-model="model['http-backend']['standalone-server'].host" />
+            <el-input v-model="model['http-backend']['standalone-server'].host"
+              :disabled="model['http-backend'].mode !== 'standalone-server'" />
           </el-form-item>
           <el-form-item label="standalone 监听端口">
-            <el-input-number v-model="model['http-backend']['standalone-server'].port" :min="1" />
-            <div class="hint">需与 MC 端口不同。</div>
+            <el-input-number v-model="model['http-backend']['standalone-server'].port" :min="1"
+              :disabled="model['http-backend'].mode !== 'standalone-server'" />
+            <div class="hint">需与 MC 端口不同。仅 standalone-server 模式生效。</div>
           </el-form-item>
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-log">
         <div slot="header">日志管控</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="日志级别">
@@ -128,11 +132,10 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-perm">
         <div slot="header">权限判断组合</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="权限插件 providers">
-            <el-input v-if="false"></el-input>
             <el-tag v-for="(p,i) in model.permission.providers" :key="i" closable size="mini" style="margin-right:6px"
                      @close="model.permission.providers.splice(i,1)">{{ p }}</el-tag>
             <el-button size="mini" type="text" icon="el-icon-plus" @click="addProvider">添加 provider</el-button>
@@ -148,7 +151,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-storage">
         <div slot="header">数据存储</div>
         <el-form label-width="180px" size="small">
           <el-divider content-position="left">YAML 后端（零依赖）</el-divider>
@@ -198,7 +201,7 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb">
+      <el-card shadow="never" class="mb" id="sec-auto">
         <div slot="header">自动运维</div>
         <el-form label-width="180px" size="small">
           <el-form-item label="总开关">
@@ -220,18 +223,17 @@
         </el-form>
       </el-card>
 
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsMain',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() {
     return { fileId: 'config' }
   },

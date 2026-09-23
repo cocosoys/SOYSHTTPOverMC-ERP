@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style scoped>
-.cfg-topbar { height: 52px; background: #fff; border-bottom: 1px solid #e4e7ed; display: flex; align-items: center; padding: 0 16px; gap: 10px; }
+.cfg-topbar { height: 52px; background: #fff; border-bottom: 1px solid #e4e7ed; display: flex; align-items: center; padding: 0 16px; gap: 10px; position: sticky; top: 0; z-index: 100; }
 .cfg-title { font-size: 15px; font-weight: 600; }
 .cfg-file { color: #909399; font-size: 12px; }
 .spacer { flex: 1; }

@@ -46,4 +46,11 @@ public class SoysConfigController {
                            @RequestBody Map<String, Object> data) {
         return configService.save(file, data);
     }
+
+    @ApiName("配置文件注释")
+    @ApiPermission("soyshttpovermc:erp:config:query")
+    @GetMapping("/help")
+    public AjaxResult help(@RequestParam(name = "file", required = true) String file) {
+        return configService.help(file);
+    }
 }

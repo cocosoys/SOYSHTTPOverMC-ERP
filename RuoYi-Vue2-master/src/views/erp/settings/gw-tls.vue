@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="TLS 强制" file="gateway/policies/tls.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:720px">
+﻿<template>
+  <config-layout title="TLS 强制" file="gateway/policies/tls.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never">
         <div slot="header">强制 HTTPS</div>
         <el-form label-width="160px" size="small">
@@ -14,18 +12,17 @@
           </el-form-item>
         </el-form>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsGwTls',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() { return { fileId: 'gw-tls' } }
 }
 </script>

@@ -1,3 +1,9 @@
+/**
+ * SOYSHTTPOverMC-ERP 子应用入口（RuoYi-Vue2）。
+ * <p>既支持独立部署，也支持被 MCERP 主应用以 wujie 微前端方式嵌入。
+ * <p>wujie 模式下监听 __WUJIE_MOUNT/__WUJIE_UNMOUNT 生命周期，
+ * 通过全局 bus 接收主应用 router-push 事件做内部导航。
+ */
 import Vue from 'vue'
 
 // SOYS 平台契约（前端书写；apiBase 占位符由托管层注入真值，默认 /api）
@@ -82,9 +88,42 @@ if (typeof window !== 'undefined' && window.SoysAuth) {
   }
 }
 
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
-})
+// wujie 微前端：主应用卸载子应用时销毁实例，卸载后再重新挂载
+const isWujie = typeof window !== 'undefined' && !!window.__POWERED_BY_WUJIE__
+let vm = null
+let busOff = null
+function mount() {
+  vm = new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount('#app')
+}
+
+if (isWujie) {
+  // wujie 生命周期钩子：mount 时接收主应用 props（含初始 path），并监听路由切换
+  window.__WUJIE_MOUNT = (props) => {
+    mount()
+    // 初始路由：主应用传 path 则跳过去（如 /erp/group）
+    if (props && props.path && router.currentRoute.path !== props.path) {
+      router.push(props.path)
+    }
+    // 主应用菜单切换时通过 bus 发 router-push(path)，子应用内部导航（避免整页重载）
+    const bus = window.$wujie && window.$wujie.bus
+    if (bus) {
+      const handler = (path) => {
+        if (path && router.currentRoute.path !== path) router.push(path)
+      }
+      bus.$on('router-push', handler)
+      busOff = () => bus.$off('router-push', handler)
+    }
+  }
+  window.__WUJIE_UNMOUNT = () => {
+    if (busOff) { busOff(); busOff = null }
+    if (vm) { vm.$destroy(); vm = null }
+  }
+  // 子应用初次加载时立即挂载（wujie 会先执行脚本再调 MOUNT，这里兜底）
+  mount()
+} else {
+  mount()
+}

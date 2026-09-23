@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="HTTPS 设置" file="gateway/https.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:720px">
+﻿<template>
+  <config-layout title="HTTPS 设置" file="gateway/https.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never">
         <div slot="header">基础</div>
         <el-form label-width="180px" size="small">
@@ -53,19 +51,46 @@
           </el-form-item>
         </el-form>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
+import { saveConfigFile } from '@/api/erp'
 
+const ALL = ['TLSv1.3', 'TLSv1.2', 'TLSv1.1', 'TLSv1']
 export default {
   name: 'SettingsGwHttps',
   mixins: [configPage],
-  components: { ConfigTopBar },
-  data() { return { fileId: 'gw-https' } }
+  components: { ConfigLayout },
+  data() { return { fileId: 'gw-https' } },
+  watch: {
+    model: {
+      handler(m) {
+        if (m && (!m['enabled-protocols'] || !m['enabled-protocols'].length)) {
+          this.$set(m, 'enabled-protocols', [...ALL])
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  methods: {
+    // 保存前：全选时清空写回，保持 yml "空=全开" 语义
+    save() {
+      const p = this.model['enabled-protocols']
+      if (p && ALL.every(x => p.includes(x))) this.$set(this.model, 'enabled-protocols', [])
+      this.saving = true
+      saveConfigFile(this.fileId, this.model).then(res => {
+        this.saving = false
+        this.original = JSON.stringify(this.model)
+        this.$modal.msgSuccess('保存成功')
+        const tip = res.data && res.data.tip
+        if (tip) this.$alert(tip, '提示', { confirmButtonText: '知道了' })
+      }).catch(() => { this.saving = false })
+    }
+  }
 }
 </script>
 

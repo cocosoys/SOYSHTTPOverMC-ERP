@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="认证鉴权" file="gateway/policies/auth.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:860px">
+﻿<template>
+  <config-layout title="认证鉴权" file="gateway/policies/auth.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never" class="mb">
         <div slot="header">基础</div>
         <el-form label-width="180px" size="small">
@@ -63,18 +61,17 @@
           </el-form-item>
         </el-form>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsGwAuth',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() { return { fileId: 'gw-auth' } }
 }
 </script>

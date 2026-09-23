@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="IP 白/黑名单" file="gateway/policies/ip-allowlist.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:720px">
+﻿<template>
+  <config-layout title="IP 白/黑名单" file="gateway/policies/ip-allowlist.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never">
         <div slot="header">IP 访问控制</div>
         <el-form label-width="180px" size="small">
@@ -28,18 +26,17 @@
         </div>
         <el-button size="mini" type="text" icon="el-icon-plus" @click="model.list.push('')">添加一行</el-button>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsGwAllow',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() { return { fileId: 'gw-allow' } }
 }
 </script>

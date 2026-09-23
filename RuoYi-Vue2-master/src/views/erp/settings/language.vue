@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="国际化" file="language.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:960px">
+﻿<template>
+  <config-layout title="国际化" file="language.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
 
       <el-card shadow="never" class="mb">
         <div slot="header">语言设置</div>
@@ -47,19 +45,17 @@
         </el-table>
         <div class="hint" style="margin-top:8px">language 留空时 source 必须含 {0} 占位符（加载时替换为当前语言代码）；来源可为文件/文件夹/网络 URL。</div>
       </el-card>
-
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsLanguage',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() {
     return { fileId: 'language' }
   },

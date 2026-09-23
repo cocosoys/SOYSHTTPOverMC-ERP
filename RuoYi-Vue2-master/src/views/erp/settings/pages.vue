@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="页面与资源" file="pages.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:1000px">
+﻿<template>
+  <config-layout title="页面与资源" file="pages.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
 
       <el-card shadow="never" class="mb">
         <div slot="header">Web 站点</div>
@@ -95,19 +93,17 @@
         </div>
         <el-button size="mini" type="text" icon="el-icon-plus" @click="addPermEntry">添加权限映射</el-button>
       </el-card>
-
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsPages',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() {
     return { fileId: 'pages' }
   },

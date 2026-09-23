@@ -9,6 +9,13 @@ function soysApi() {
   return (ctx && ctx.apiPrefix) || '/api'
 }
 
+/**
+ * MCERP 宿主命名空间：getInfo/getRouters 是 MCERP 主插件 ErpAuthController 端点
+ * （/api/plugins/MCERP/auth/getInfo、/auth/getRouters）。
+ * 附属插件自身命名空间（/api/plugins/<附属>）下没有这些端点，走默认 baseURL 会 401 → 误判未登录 → 清登录态。
+ */
+const MCERP_HOST_API = '/api/plugins/MCERP'
+
 // 登录方法：直接调用主插件自带弹窗登录 POST /api/auth/login
 // 成功返回 { token, player }（SOYS 契约：data.token / data.player）
 export function login(username, password, code, uuid) {
@@ -29,11 +36,12 @@ export function register(data) {
   return Promise.reject(new Error('注册功能由主插件/游戏内处理'))
 }
 
-// 获取用户详细信息（若依契约，MCERP 保留端点 /auth/getInfo）
+// 获取用户详细信息（若依契约，MCERP 主插件端点 /auth/getInfo → /api/plugins/MCERP/auth/getInfo）
 export function getInfo() {
   return request({
     url: '/auth/getInfo',
-    method: 'get'
+    method: 'get',
+    baseURL: MCERP_HOST_API
   })
 }
 

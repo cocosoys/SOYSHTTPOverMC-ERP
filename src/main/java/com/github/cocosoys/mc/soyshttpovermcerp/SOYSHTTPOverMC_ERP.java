@@ -1,5 +1,7 @@
 package com.github.cocosoys.mc.soyshttpovermcerp;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -8,8 +10,12 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public final class SOYSHTTPOverMC_ERP extends JavaPlugin {
 
+    private @Getter @Setter static SOYSHTTPOverMC_ERP instance;
+
     @Override
     public void onEnable() {
+        setInstance(this);
+
         boolean ok = new SoysErpExpansion().register();
         if (!ok) {
             getLogger().severe("SOYSHTTPOverMC-ERP 扩展登记失败：请确认 MCERP / SOYSHTTPOverMC 已加载且插件名不冲突");

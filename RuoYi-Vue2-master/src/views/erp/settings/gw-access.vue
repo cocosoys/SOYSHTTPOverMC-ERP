@@ -1,7 +1,5 @@
-<template>
-  <div class="app-container" style="padding:0" v-loading="loading">
-    <config-top-bar title="访问限制器" file="gateway/policies/access-limiter.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" />
-    <div style="padding:16px 20px; max-width:960px">
+﻿<template>
+  <config-layout title="访问限制器" file="gateway/policies/access-limiter.yml" :dirty="dirty" :loading="loading" :saving="saving" @reload="reload" @save="save" >
       <el-card shadow="never">
         <div slot="header">固定窗口访问限制（{{ (model['path-patterns']||[]).length }} 条）</div>
         <el-form label-width="100px" size="small" style="margin-bottom:10px">
@@ -40,18 +38,17 @@
         </el-table>
         <el-button size="mini" type="text" icon="el-icon-plus" style="margin-top:8px" @click="addRow">添加规则</el-button>
       </el-card>
-    </div>
-  </div>
+  </config-layout>
 </template>
 
 <script>
 import configPage from '../mixins/configPage'
-import ConfigTopBar from '../components/ConfigTopBar.vue'
+import ConfigLayout from '../components/ConfigLayout.vue'
 
 export default {
   name: 'SettingsGwAccess',
   mixins: [configPage],
-  components: { ConfigTopBar },
+  components: { ConfigLayout },
   data() { return { fileId: 'gw-access' } },
   methods: {
     addRow() {

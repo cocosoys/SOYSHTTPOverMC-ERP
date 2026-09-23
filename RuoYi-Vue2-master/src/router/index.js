@@ -3,8 +3,19 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout */
-import Layout from '@/layout'
+/* Layout：wujie 嵌入时主应用 MCERP 提供侧边栏（空 Layout）；直接访问时用完整 Layout（自带侧边栏） */
+import RealLayout from '@/layout'
+import EmptyLayout from '@/layout/Empty'
+
+// wujie 子应用标记（主应用加载时注入 window.__POWERED_BY_WUJIE__）
+export const isWujie = typeof window !== 'undefined' && !!window.__POWERED_BY_WUJIE__
+const Layout = isWujie ? EmptyLayout : RealLayout
+
+// 运行时 base：生产 = 契约 pageFullPrefix（/web/plugins/SOYSHTTPOverMC-ERP）；dev = '/'
+const ctx = (typeof window !== 'undefined' && window.SOYS_CONTEXT) || {}
+const routeBase = process.env.NODE_ENV === 'production'
+  ? (ctx.pageFullPrefix || '/web/plugins/SOYSHTTPOverMC-ERP/')
+  : '/'
 
 /**
  * Note: 路由配置项
@@ -74,43 +85,28 @@ export const constantRoutes = [
       }
     ]
   },
+  // ERP 业务路由：写死 /erp/*，与 wujie 加载的子应用 URL 一致（不从 getRouters 拉）
   {
     path: '/erp',
     component: Layout,
     redirect: '/erp/user',
-    alwaysShow: true,
-    meta: { title: 'ERP 管理台', icon: 'peoples' },
     children: [
-      {
-        path: 'user',
-        component: () => import('@/views/erp/user/index'),
-        name: 'ErpUser',
-        meta: { title: '用户列表', icon: 'user' }
-      },
-      {
-        path: 'group',
-        component: () => import('@/views/erp/group/index'),
-        name: 'ErpGroup',
-        meta: { title: '权限组列表', icon: 'lock' }
-      },
-      {
-        path: 'apikey',
-        component: () => import('@/views/erp/apikey/index'),
-        name: 'ErpApiKey',
-        meta: { title: 'APIKEY 管理', icon: 'key' }
-      },
-      { path: 'settings/main', component: () => import('@/views/erp/settings/main'), name: 'CfgMain', meta: { title: '核心配置', icon: 'yaml' } },
-      { path: 'settings/language', component: () => import('@/views/erp/settings/language'), name: 'CfgLanguage', meta: { title: '国际化', icon: 'yaml' } },
-      { path: 'settings/pages', component: () => import('@/views/erp/settings/pages'), name: 'CfgPages', meta: { title: '页面与资源', icon: 'yaml' } },
-      { path: 'settings/eula', component: () => import('@/views/erp/settings/eula'), name: 'CfgEula', meta: { title: '用户协议', icon: 'yaml' } },
-      { path: 'settings/gw-config', component: () => import('@/views/erp/settings/gw-config'), name: 'CfgGwConfig', meta: { title: '网关总开关', icon: 'tools' } },
-      { path: 'settings/gw-https', component: () => import('@/views/erp/settings/gw-https'), name: 'CfgGwHttps', meta: { title: 'HTTPS 设置', icon: 'tools' } },
-      { path: 'settings/gw-auth', component: () => import('@/views/erp/settings/gw-auth'), name: 'CfgGwAuth', meta: { title: '认证鉴权', icon: 'tools' } },
-      { path: 'settings/gw-rate', component: () => import('@/views/erp/settings/gw-rate'), name: 'CfgGwRate', meta: { title: '令牌桶限流', icon: 'tools' } },
-      { path: 'settings/gw-access', component: () => import('@/views/erp/settings/gw-access'), name: 'CfgGwAccess', meta: { title: '访问限制器', icon: 'tools' } },
-      { path: 'settings/gw-allow', component: () => import('@/views/erp/settings/gw-allow'), name: 'CfgGwAllow', meta: { title: 'IP 白黑名单', icon: 'tools' } },
-      { path: 'settings/gw-tls', component: () => import('@/views/erp/settings/gw-tls'), name: 'CfgGwTls', meta: { title: 'TLS 强制', icon: 'tools' } },
-      { path: 'settings/gw-session', component: () => import('@/views/erp/settings/gw-session'), name: 'CfgGwSession', meta: { title: '会话令牌', icon: 'tools' } }
+      { path: 'user', component: () => import('@/views/erp/user/index'), name: 'ErpUser', meta: { title: '游戏用户列表' } },
+      { path: 'group', component: () => import('@/views/erp/group/index'), name: 'ErpGroup', meta: { title: '权限组列表' } },
+      { path: 'apikey', component: () => import('@/views/erp/apikey/index'), name: 'ErpApiKey', meta: { title: 'APIKEY 管理' } },
+      { path: 'lang', component: () => import('@/views/erp/lang'), name: 'ErpLang', meta: { title: '语言管理' } },
+      { path: 'settings/config', component: () => import('@/views/erp/settings/main'), name: 'SettingsConfig', meta: { title: '核心配置' } },
+      { path: 'settings/language', component: () => import('@/views/erp/settings/language'), name: 'SettingsLanguage', meta: { title: '国际化' } },
+      { path: 'settings/pages', component: () => import('@/views/erp/settings/pages'), name: 'SettingsPages', meta: { title: '页面与资源' } },
+      { path: 'settings/eula', component: () => import('@/views/erp/settings/eula'), name: 'SettingsEula', meta: { title: '用户协议' } },
+      { path: 'settings/gw-config', component: () => import('@/views/erp/settings/gw-config'), name: 'SettingsGwConfig', meta: { title: '网关总开关' } },
+      { path: 'settings/gw-https', component: () => import('@/views/erp/settings/gw-https'), name: 'SettingsGwHttps', meta: { title: 'HTTPS 设置' } },
+      { path: 'settings/gw-auth', component: () => import('@/views/erp/settings/gw-auth'), name: 'SettingsGwAuth', meta: { title: '认证鉴权' } },
+      { path: 'settings/gw-rate', component: () => import('@/views/erp/settings/gw-rate'), name: 'SettingsGwRate', meta: { title: '令牌桶限流' } },
+      { path: 'settings/gw-access', component: () => import('@/views/erp/settings/gw-access'), name: 'SettingsGwAccess', meta: { title: '访问限制器' } },
+      { path: 'settings/gw-allow', component: () => import('@/views/erp/settings/gw-allow'), name: 'SettingsGwAllow', meta: { title: 'IP 白黑名单' } },
+      { path: 'settings/gw-tls', component: () => import('@/views/erp/settings/gw-tls'), name: 'SettingsGwTls', meta: { title: 'TLS 强制' } },
+      { path: 'settings/gw-session', component: () => import('@/views/erp/settings/gw-session'), name: 'SettingsGwSession', meta: { title: '会话令牌' } }
     ]
   },
   {
@@ -137,7 +133,8 @@ Router.prototype.replace = function push(location) {
 }
 
 export default new Router({
-  mode: 'hash', // SOYS 无 history 回退（SPA fallback=false），必须 hash 模式避免刷新/跳转落到根路径
+  mode: 'history', // SOYS 1.4.0 已实现 spaFallback，深层 URL 刷新不会 404
+  base: routeBase,
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
