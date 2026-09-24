@@ -4,6 +4,8 @@ import com.github.cocosoys.mc.soyshttpovermc.platform.PlatformYaml;
 import com.github.cocosoys.mc.soyshttpovermc.util.AjaxResult;
 import com.github.cocosoys.mc.soyshttpovermc.util.ConfigUtil;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.SoysConfigFile;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysConfigFileVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysConfigSaveVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysConfigService;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -12,8 +14,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -33,15 +35,15 @@ public class SoysConfigServiceImpl implements SoysConfigService {
     @Override
     public AjaxResult list() {
         try {
-            List<Map<String, Object>> rows = new ArrayList<>();
+            List<SoysConfigFileVo> rows = new ArrayList<>();
             for (SoysConfigFile f : SoysConfigFile.values()) {
-                Map<String, Object> m = new LinkedHashMap<>();
-                m.put("id", f.getId());
-                m.put("name", f.getName());
-                m.put("group", f.getGroup());
-                m.put("file", f.getFile());
-                m.put("desc", f.getDesc());
-                rows.add(m);
+                SoysConfigFileVo vo = new SoysConfigFileVo();
+                vo.setId(f.getId());
+                vo.setName(f.getName());
+                vo.setGroup(f.getGroup());
+                vo.setFile(f.getFile());
+                vo.setDesc(f.getDesc());
+                rows.add(vo);
             }
             return AjaxResult.success(rows);
         } catch (Throwable t) {
@@ -77,9 +79,8 @@ public class SoysConfigServiceImpl implements SoysConfigService {
                 return AjaxResult.error("配置内容为空");
             }
             PlatformYaml.save(ConfigUtil.toYaml(data), file);
-            Map<String, Object> resp = new LinkedHashMap<>();
-            resp.put("file", f.getFile());
-            resp.put("tip", "已保存。执行 /soyshttp reload 热重载生效（部分网关项需重启服务器）");
+            SoysConfigSaveVo resp = SoysConfigSaveVo.of(f.getFile(),
+                    "已保存。执行 /soyshttp reload 热重载生效（部分网关项需重启服务器）");
             return AjaxResult.success(resp);
         } catch (Throwable t) {
             return AjaxResult.error("配置保存失败：" + t.getMessage());
@@ -87,48 +88,6 @@ public class SoysConfigServiceImpl implements SoysConfigService {
     }
 
     // ===== 内部 =====
-
-    @Override
-    public AjaxResult help(String fileId) {
-        try {
-            SoysConfigFile f = requireFile(fileId);
-            File file = resolve(f);
-            if (!file.isFile()) return AjaxResult.error("配置文件不存在: " + file.getPath());
-            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-            Map<String, String> out = new LinkedHashMap<>();
-            // 逐行解析：累积注释行，遇到 key: 行时把注释挂到该 key 的完整路径
-            List<String> pending = new ArrayList<>();
-            List<String> path = new ArrayList<>(); // 当前缩进层级
-            for (String raw : lines) {
-                String line = raw.replaceAll("\t", "    ");
-                String trimmed = line.trim();
-                if (trimmed.isEmpty()) { pending.clear(); continue; }
-                if (trimmed.startsWith("#")) {
-                    String c = trimmed.substring(1).trim();
-                    if (!c.startsWith("===") && !c.startsWith("---")) pending.add(c);
-                    continue;
-                }
-                // key: value 行
-                int colon = trimmed.indexOf(':');
-                if (colon <= 0) { pending.clear(); continue; }
-                String key = trimmed.substring(0, colon).trim();
-                int indent = 0;
-                while (indent < line.length() && line.charAt(indent) == ' ') indent++;
-                int level = indent / 2;
-                // 调整路径栈
-                while (path.size() > level) path.remove(path.size() - 1);
-                path.add(key);
-                String full = String.join(".", path);
-                if (!pending.isEmpty()) {
-                    out.put(full, String.join(" ", pending));
-                    pending.clear();
-                }
-            }
-            return AjaxResult.success(out);
-        } catch (Throwable t) {
-            return AjaxResult.error("注释解析失败：" + t.getMessage());
-        }
-    }
 
     private static SoysConfigFile requireFile(String fileId) {
         SoysConfigFile f = SoysConfigFile.byId(fileId);

@@ -9,7 +9,7 @@
                 :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
                 :unique-opened="true"
                 :active-text-color="settings.theme"
-                :collapse-transition="false"
+                :collapse-transition="false"`n                :router="true"
                 mode="vertical"
             >
                 <sidebar-item

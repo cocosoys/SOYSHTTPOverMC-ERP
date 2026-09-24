@@ -5,30 +5,30 @@ depend: [MCERP]
 author: cocosoys
 description: ERP 扩展模块，挂载于 MCERP 管理台：用户列表 / 权限组列表 / X-API-KEY 管理（复用 SOYSHTTPOverMC 本地权限表）。
 permissions:
-  soys.erp.menu:
+  soyshttpovermc.erp.menu:
     description: SOYSHTTPOverMC ERP 菜单访问
     default: op
-  soys.erp.user.list:
+  soyshttpovermc.erp.user.list:
     description: 用户列表
     default: op
-  soys.erp.user.edit:
+  soyshttpovermc.erp.user.edit:
     description: 用户权限/权限组/分配KEY/延期
     default: op
-  soys.erp.group.list:
+  soyshttpovermc.erp.group.list:
     description: 权限组列表
     default: op
-  soys.erp.group.edit:
+  soyshttpovermc.erp.group.edit:
     description: 权限组管理
     default: op
-  soys.erp.apikey.list:
+  soyshttpovermc.erp.apikey.list:
     description: APIKEY 列表
     default: op
-  soys.erp.apikey.edit:
+  soyshttpovermc.erp.apikey.edit:
     description: APIKEY 管理
     default: op
-  soys.erp.config.list:
+  soyshttpovermc.erp.config.list:
     description: 配置文件查看（插件配置 / 网关配置）
     default: op
-  soys.erp.config.edit:
+  soyshttpovermc.erp.config.edit:
     description: 配置文件保存
     default: op

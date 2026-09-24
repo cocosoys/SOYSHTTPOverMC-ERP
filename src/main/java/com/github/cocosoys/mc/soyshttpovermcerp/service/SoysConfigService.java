@@ -18,7 +18,4 @@ public interface SoysConfigService {
 
     /** 保存单个配置文件（全量树 → 保留注释写回）。 */
     AjaxResult save(String fileId, Map<String, Object> data);
-
-    /** 读取指定配置文件的 yml 注释 → { 配置路径: 注释文本 }。 */
-    AjaxResult help(String fileId);
 }

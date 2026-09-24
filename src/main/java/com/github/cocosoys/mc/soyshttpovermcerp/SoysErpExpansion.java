@@ -63,22 +63,17 @@ public class SoysErpExpansion extends McerpExpansion {
 
     @Override
     protected ErpMenus menus() {
-        // 按钮（F）免手写：menu(...,Controller.class) 自动按 ControllerPermScanner 扫描端点生成
         return ErpMenus.create()
                 .menu("user", "游戏用户列表", "user", SoysPermUserController.class)
-                .component("/user")
                 .perms("soyshttpovermc:erp:user:list")
                 .orderNum(10)
                 .menu("group", "权限组列表", "lock", SoysPermGroupController.class)
-                .component("/group")
                 .perms("soyshttpovermc:erp:group:list")
                 .orderNum(20)
                 .menu("apikey", "APIKEY 管理", "lock", SoysApiKeyController.class)
-                .component("/apikey")
                 .perms("soyshttpovermc:erp:apikey:list")
                 .orderNum(30)
                 .menu("lang", "语言管理", "language", SoysLangController.class)
-                .component("/lang")
                 .perms("soyshttpovermc:erp:lang:list")
                 .orderNum(35)
                 // 插件配置 dir：按 SoysConfigFile.values() 逐个登记文件级菜单，点击直达对应配置文件
@@ -89,7 +84,6 @@ public class SoysErpExpansion extends McerpExpansion {
                             continue;
                         }
                         d.menu(f.getId(), f.getName(), "input")
-                                .component("erp/settings/" + f.getId())
                                 .perms("soyshttpovermc:erp:config:list")
                                 .orderNum(i);
                     }
@@ -101,7 +95,6 @@ public class SoysErpExpansion extends McerpExpansion {
                                 continue;
                             }
                             g.menu(f.getId(), f.getName(), "input")
-                                    .component("erp/settings/" + f.getId())
                                     .perms("soyshttpovermc:erp:config:list")
                                     .orderNum(i);
                         }

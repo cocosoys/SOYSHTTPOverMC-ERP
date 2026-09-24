@@ -9,15 +9,19 @@ import com.github.cocosoys.mc.soyshttpovermc.spring.entity.SoysPermUserGroup;
 import com.github.cocosoys.mc.soyshttpovermc.util.AjaxResult;
 import com.github.cocosoys.mc.soyshttpovermc.util.PageUtils;
 import com.github.cocosoys.mc.soyshttpovermc.util.TableDataInfo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysGroupMemberVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysGroupMembersVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermGroupCopyVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermGroupRemoveVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermGroupReq;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermGroupVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermPermissionVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermRowsVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysPermGroupService;
 import com.github.cocosoys.mc.soyshttpovermcerp.util.ErpSoysStore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -135,8 +139,7 @@ public class SoysPermGroupServiceImpl implements SoysPermGroupService {
     @Override
     public AjaxResult perms(String id) {
         try {
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("rows", permRows(ErpSoysStore.localStore().listGroupPermissions(gid(id))));
+            SoysPermRowsVo data = SoysPermRowsVo.of(permRows(ErpSoysStore.localStore().listGroupPermissions(gid(id))));
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("权限组权限查询失败：" + t.getMessage());
@@ -206,9 +209,7 @@ public class SoysPermGroupServiceImpl implements SoysPermGroupService {
                     }
                 }
             }
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("added", added);
-            data.put("skipped", skipped);
+            SoysPermGroupCopyVo data = SoysPermGroupCopyVo.of(added, skipped);
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("批量复制失败：" + t.getMessage());
@@ -245,8 +246,7 @@ public class SoysPermGroupServiceImpl implements SoysPermGroupService {
                     }
                 }
             }
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("removed", removed);
+            SoysPermGroupRemoveVo data = SoysPermGroupRemoveVo.of(removed);
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("批量移除失败：" + t.getMessage());
@@ -257,16 +257,12 @@ public class SoysPermGroupServiceImpl implements SoysPermGroupService {
     public AjaxResult members(String id) {
         try {
             List<SoysPermUserGroup> ugs = ErpSoysStore.localStore().listGroupMembers(gid(id));
-            List<Map<String, Object>> rows = new ArrayList<>();
+            List<SoysGroupMemberVo> rows = new ArrayList<>();
             for (SoysPermUserGroup ug : ugs) {
-                Map<String, Object> m = new LinkedHashMap<>();
-                m.put("uuid", ug.getUuid());
                 SoysPermUser u = ErpSoysStore.localStore().getUser(ug.getUuid());
-                m.put("player", u == null ? null : u.getPlayer());
-                rows.add(m);
+                rows.add(SoysGroupMemberVo.of(ug.getUuid(), u == null ? null : u.getPlayer()));
             }
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("rows", rows);
+            SoysGroupMembersVo data = SoysGroupMembersVo.of(rows);
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("组成员查询失败：" + t.getMessage());

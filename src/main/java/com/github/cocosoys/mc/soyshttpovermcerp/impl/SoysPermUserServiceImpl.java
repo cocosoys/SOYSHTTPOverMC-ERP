@@ -9,7 +9,9 @@ import com.github.cocosoys.mc.soyshttpovermc.spring.entity.SoysPermUser;
 import com.github.cocosoys.mc.soyshttpovermc.util.AjaxResult;
 import com.github.cocosoys.mc.soyshttpovermc.util.PageUtils;
 import com.github.cocosoys.mc.soyshttpovermc.util.TableDataInfo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysApiKeyGenVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermPermissionVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermRowsVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermUserReq;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermUserVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysPermUserService;
@@ -17,9 +19,7 @@ import com.github.cocosoys.mc.soyshttpovermcerp.util.ErpSoysStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用户列表业务实现：直接复用主插件 LocalPermissionStore / ApiKeyStore。
@@ -113,8 +113,7 @@ public class SoysPermUserServiceImpl implements SoysPermUserService {
     public AjaxResult perms(String uuid) {
         try {
             String key = userKey(uuid);
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("rows", permRows(ErpSoysStore.localStore().listUserPermissions(key)));
+            SoysPermRowsVo data = SoysPermRowsVo.of(permRows(ErpSoysStore.localStore().listUserPermissions(key)));
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("用户权限查询失败：" + t.getMessage());
@@ -182,10 +181,10 @@ public class SoysPermUserServiceImpl implements SoysPermUserService {
                 return AjaxResult.error("密钥生成失败（未落库）");
             }
             ErpSoysStore.apiKeyStore().bind(key.getId(), uuid);
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("fingerprint", key.getFingerprint());
-            data.put("plain", plain);
-            data.put("remark", remark);
+            SoysApiKeyGenVo data = new SoysApiKeyGenVo();
+            data.setFingerprint(key.getFingerprint());
+            data.setPlain(plain);
+            data.setRemark(remark);
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("分配 KEY 失败：" + t.getMessage());

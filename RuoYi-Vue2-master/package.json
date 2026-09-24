@@ -1,7 +1,7 @@
 {
-  "name": "ruoyi",
+  "name": "soyshttpovermcerp",
   "version": "3.9.2",
-  "description": "若依管理系统",
+  "description": "SOYSHTTPOverMC ERP",
   "author": "若依",
   "license": "MIT",
   "scripts": {

@@ -6,16 +6,16 @@ import com.github.cocosoys.mc.soyshttpovermc.spring.entity.SoysPermUser;
 import com.github.cocosoys.mc.soyshttpovermc.util.AjaxResult;
 import com.github.cocosoys.mc.soyshttpovermc.util.PageUtils;
 import com.github.cocosoys.mc.soyshttpovermc.util.TableDataInfo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysApiKeyGenVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysApiKeyReq;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysApiKeyVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermPermissionVo;
+import com.github.cocosoys.mc.soyshttpovermcerp.entity.vo.SoysPermRowsVo;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysApiKeyService;
 import com.github.cocosoys.mc.soyshttpovermcerp.util.ErpSoysStore;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * X-API-KEY 业务实现：复用主插件 ApiKeyStore；列表绝不返回 apiKey 哈希字段。
@@ -84,10 +84,10 @@ public class SoysApiKeyServiceImpl implements SoysApiKeyService {
             if (key == null) {
                 return AjaxResult.error("密钥生成失败（未落库）");
             }
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("fingerprint", key.getFingerprint());
-            data.put("plain", plain);
-            data.put("remark", key.getRemark());
+            SoysApiKeyGenVo data = new SoysApiKeyGenVo();
+            data.setFingerprint(key.getFingerprint());
+            data.setPlain(plain);
+            data.setRemark(key.getRemark());
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("密钥生成失败：" + t.getMessage());
@@ -165,8 +165,7 @@ public class SoysApiKeyServiceImpl implements SoysApiKeyService {
     @Override
     public AjaxResult perms(String keyId) {
         try {
-            Map<String, Object> data = new LinkedHashMap<>();
-            data.put("rows", permRows(ErpSoysStore.apiKeyStore().listPermissions(keyId.trim())));
+            SoysPermRowsVo data = SoysPermRowsVo.of(permRows(ErpSoysStore.apiKeyStore().listPermissions(keyId.trim())));
             return AjaxResult.success(data);
         } catch (Throwable t) {
             return AjaxResult.error("APIKEY 权限查询失败：" + t.getMessage());

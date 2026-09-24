@@ -18,28 +18,9 @@ const routeBase = process.env.NODE_ENV === 'production'
   : '/'
 
 /**
- * Note: 路由配置项
- *
- * hidden: true                     // 当设置 true 的时候该路由不会再侧边栏出现 如401，login等页面，或者如一些编辑页面/edit/1
- * alwaysShow: true                 // 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
- *                                  // 只有一个时，会将那个子路由当做根路由显示在侧边栏--如引导页面
- *                                  // 若你想不管路由下面的 children 声明的个数都显示你的根路由
- *                                  // 你可以设置 alwaysShow: true，这样它就会忽略之前定义的规则，一直显示根路由
- * redirect: noRedirect             // 当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
- * name:'router-name'               // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
- * query: '{"id": 1, "name": "ry"}' // 访问路由的默认传递参数
- * roles: ['admin', 'common']       // 访问路由的角色权限
- * permissions: ['a:a:a', 'b:b:b']  // 访问路由的菜单权限
- * meta : {
-    noCache: true                   // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
-    title: 'title'                  // 设置该路由在侧边栏和面包屑中展示的名字
-    icon: 'svg-name'                // 设置该路由的图标，对应路径src/assets/icons/svg
-    breadcrumb: false               // 如果设置为false，则不会在breadcrumb面包屑中显示
-    activeMenu: '/system/user'      // 当路由设置了该属性，则会高亮相对应的侧边栏。
-  }
+ * 公共路由：所有模式都加载（基础页面 + 首页）。
+ * 业务菜单路由不在此列——wujie 模式下用 wujieRoutes 兜底，独立模式下由后端 getRouters 动态下发。
  */
-
-// 公共路由
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -85,30 +66,6 @@ export const constantRoutes = [
       }
     ]
   },
-  // ERP 业务路由：写死 /erp/*，与 wujie 加载的子应用 URL 一致（不从 getRouters 拉）
-  {
-    path: '/erp',
-    component: Layout,
-    redirect: '/erp/user',
-    children: [
-      { path: 'user', component: () => import('@/views/erp/user/index'), name: 'ErpUser', meta: { title: '游戏用户列表' } },
-      { path: 'group', component: () => import('@/views/erp/group/index'), name: 'ErpGroup', meta: { title: '权限组列表' } },
-      { path: 'apikey', component: () => import('@/views/erp/apikey/index'), name: 'ErpApiKey', meta: { title: 'APIKEY 管理' } },
-      { path: 'lang', component: () => import('@/views/erp/lang'), name: 'ErpLang', meta: { title: '语言管理' } },
-      { path: 'settings/config', component: () => import('@/views/erp/settings/main'), name: 'SettingsConfig', meta: { title: '核心配置' } },
-      { path: 'settings/language', component: () => import('@/views/erp/settings/language'), name: 'SettingsLanguage', meta: { title: '国际化' } },
-      { path: 'settings/pages', component: () => import('@/views/erp/settings/pages'), name: 'SettingsPages', meta: { title: '页面与资源' } },
-      { path: 'settings/eula', component: () => import('@/views/erp/settings/eula'), name: 'SettingsEula', meta: { title: '用户协议' } },
-      { path: 'settings/gw-config', component: () => import('@/views/erp/settings/gw-config'), name: 'SettingsGwConfig', meta: { title: '网关总开关' } },
-      { path: 'settings/gw-https', component: () => import('@/views/erp/settings/gw-https'), name: 'SettingsGwHttps', meta: { title: 'HTTPS 设置' } },
-      { path: 'settings/gw-auth', component: () => import('@/views/erp/settings/gw-auth'), name: 'SettingsGwAuth', meta: { title: '认证鉴权' } },
-      { path: 'settings/gw-rate', component: () => import('@/views/erp/settings/gw-rate'), name: 'SettingsGwRate', meta: { title: '令牌桶限流' } },
-      { path: 'settings/gw-access', component: () => import('@/views/erp/settings/gw-access'), name: 'SettingsGwAccess', meta: { title: '访问限制器' } },
-      { path: 'settings/gw-allow', component: () => import('@/views/erp/settings/gw-allow'), name: 'SettingsGwAllow', meta: { title: 'IP 白黑名单' } },
-      { path: 'settings/gw-tls', component: () => import('@/views/erp/settings/gw-tls'), name: 'SettingsGwTls', meta: { title: 'TLS 强制' } },
-      { path: 'settings/gw-session', component: () => import('@/views/erp/settings/gw-session'), name: 'SettingsGwSession', meta: { title: '会话令牌' } }
-    ]
-  },
   {
     path: '/lock',
     component: () => import('@/views/lock'),
@@ -116,6 +73,39 @@ export const constantRoutes = [
     meta: { title: '锁定屏幕' }
   }
 ]
+
+/**
+ * wujie 模式专用业务路由：主应用未通过 bus 下发路由时的兜底。
+ * <p>仅在 isWujie=true 时合并进 router；独立访问时完全不加载，避免与后端动态路由重复。
+ * <p>菜单结构严格对齐后端 SoysErpExpansion.menus()。
+ */
+export const wujieRoutes = isWujie ? [
+  {
+    path: '/soyshttpovermcerp',
+    component: Layout,
+    redirect: '/soyshttpovermcerp/user',
+    children: [
+      { path: 'user', component: () => import('@/views/soyshttpovermcerp/user/index'), name: 'ErpUser', meta: { title: '游戏用户列表' } },
+      { path: 'group', component: () => import('@/views/soyshttpovermcerp/group/index'), name: 'ErpGroup', meta: { title: '权限组列表' } },
+      { path: 'apikey', component: () => import('@/views/soyshttpovermcerp/apikey/index'), name: 'ErpApiKey', meta: { title: 'APIKEY 管理' } },
+      { path: 'lang', component: () => import('@/views/soyshttpovermcerp/lang/index'), name: 'ErpLang', meta: { title: '语言管理' } },
+      // 插件配置 dir（config.yml / language.yml / pages.yml / EULA.yml）
+      { path: 'config/config', component: () => import('@/views/soyshttpovermcerp/config/config'), name: 'ConfigConfig', meta: { title: '核心配置' } },
+      { path: 'config/language', component: () => import('@/views/soyshttpovermcerp/config/language'), name: 'ConfigLanguage', meta: { title: '国际化' } },
+      { path: 'config/pages', component: () => import('@/views/soyshttpovermcerp/config/pages'), name: 'ConfigPages', meta: { title: '页面与资源' } },
+      { path: 'config/eula', component: () => import('@/views/soyshttpovermcerp/config/eula'), name: 'ConfigEula', meta: { title: '使用协议' } },
+      // 网关 dir（gateway/* 8 个文件）
+      { path: 'config/gateway/gw-config', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-config'), name: 'GwConfig', meta: { title: '网关总开关' } },
+      { path: 'config/gateway/gw-https', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-https'), name: 'GwHttps', meta: { title: 'HTTPS 设置' } },
+      { path: 'config/gateway/gw-auth', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-auth'), name: 'GwAuth', meta: { title: '认证鉴权' } },
+      { path: 'config/gateway/gw-rate', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-rate'), name: 'GwRate', meta: { title: '令牌桶限流' } },
+      { path: 'config/gateway/gw-access', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-access'), name: 'GwAccess', meta: { title: '访问限制器' } },
+      { path: 'config/gateway/gw-allow', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-allow'), name: 'GwAllow', meta: { title: 'IP 白名单' } },
+      { path: 'config/gateway/gw-tls', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-tls'), name: 'GwTls', meta: { title: 'TLS 强制' } },
+      { path: 'config/gateway/gw-session', component: () => import('@/views/soyshttpovermcerp/config/gateway/gw-session'), name: 'GwSession', meta: { title: '会话令牌' } }
+    ]
+  }
+] : []
 
 // 动态路由（预留）：菜单由后端 getRouters 动态驱动（ERP 模块菜单），此处保持空
 export const dynamicRoutes = []
@@ -136,5 +126,5 @@ export default new Router({
   mode: 'history', // SOYS 1.4.0 已实现 spaFallback，深层 URL 刷新不会 404
   base: routeBase,
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: constantRoutes.concat(wujieRoutes)
 })

@@ -18,7 +18,7 @@ import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/ruoyi.scss' // ruoyi css
 import App from './App'
 import store from './store'
-import router from './router'
+import router, { wujieRoutes } from './router'
 import directive from './directive' // directive
 import plugins from './plugins' // plugins
 import { download } from '@/utils/request'
@@ -104,7 +104,9 @@ if (isWujie) {
   // wujie 生命周期钩子：mount 时接收主应用 props（含初始 path），并监听路由切换
   window.__WUJIE_MOUNT = (props) => {
     mount()
-    // 初始路由：主应用传 path 则跳过去（如 /erp/group）
+    // wujie 模式下侧边栏直接用 wujieRoutes（不调 GenerateRoutes，避免与主应用菜单重复）
+    store.commit('SET_SIDEBAR_ROUTERS', wujieRoutes)
+    // 初始路由：主应用传 path 则跳过去（如 /soyshttpovermcerp/group）
     if (props && props.path && router.currentRoute.path !== props.path) {
       router.push(props.path)
     }
@@ -122,8 +124,8 @@ if (isWujie) {
     if (busOff) { busOff(); busOff = null }
     if (vm) { vm.$destroy(); vm = null }
   }
-  // 子应用初次加载时立即挂载（wujie 会先执行脚本再调 MOUNT，这里兜底）
-  mount()
+  // wujie 会在脚本执行后自动调用 __WUJIE_MOUNT(props) 再挂载；
+  // 此处不要兜底 mount()，否则会与 __WUJIE_MOUNT 内的 mount() 产生两个 Vue 实例互相覆盖。
 } else {
   mount()
 }

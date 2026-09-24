@@ -126,6 +126,4 @@ export function loadLangEntries(file) {
 export function saveLangEntries(file, entries) {
   return request({ url: '/erp/lang/save', method: 'post', params: { file }, data: entries })
 }
-export function loadConfigHelp(file) {
-  return request({ url: '/erp/config/help', method: 'get', params: { file } })
-}
+

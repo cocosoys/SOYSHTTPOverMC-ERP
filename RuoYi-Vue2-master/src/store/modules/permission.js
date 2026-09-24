@@ -46,6 +46,7 @@ const permission = {
           const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
           rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
           router.addRoutes(asyncRoutes)
+          router.addRoutes(rewriteRoutes)
           commit('SET_ROUTES', rewriteRoutes)
           commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
           commit('SET_DEFAULT_ROUTES', sidebarRoutes)
@@ -126,12 +127,10 @@ export const loadView = (view) => {
   if (typeof view === 'string' && view.startsWith('wujie:')) {
     const url = view.slice(6)
     // 提取 /erp/... 之后的子路径：/web/plugins/SOYSHTTPOverMC-ERP/erp/settings/config → erp/settings/config
-    const m = url.match(/\/erp\/(.+)$/)
+    const m = url.match(/\/soyshttpovermcerp\/(.+)$/)
     if (m) {
       let sub = m[1]
-      // settings/config 对应 main.vue（主配置页）
-      if (sub === 'settings/config') sub = 'settings/main'
-      view = 'erp/' + sub
+      view = 'soyshttpovermcerp/' + sub
     }
   }
   if (process.env.NODE_ENV === 'development') {
