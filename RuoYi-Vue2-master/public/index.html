@@ -12,6 +12,12 @@
     <script src="<%= BASE_URL %>__SOYS_CONTEXT__.js"></script>
     <!-- SOYS 公共登录组件（SoysAuth）：token 认证/401 自动弹窗/登录跳转全复用主插件自带 auth -->
     <script src="/soys-auth.js"></script>
+    <!-- 基础库 externals：从主插件公共资源加载，webpack 不打包 -->
+    <script src="/common/vue.min.js"></script>
+    <script src="/common/vuex.min.js"></script>
+    <script src="/common/vue-router.min.js"></script>
+    <script src="/common/element-ui.min.js"></script>
+    <link rel="stylesheet" href="/common/element-ui.css">
     <title><%= webpackConfig.name %></title>
     <!--[if lt IE 11]><script>window.location.href='./html/ie.html';</script><![endif]-->
 	  <style>

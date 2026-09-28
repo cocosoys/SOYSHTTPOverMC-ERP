@@ -60,7 +60,7 @@
     <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList" />
 
     <!-- ============ 权限管理 ============ -->
-    <el-dialog :title="'权限管理 · ' + (currentUser && currentUser.player)" :visible.sync="permOpen" width="640px" append-to-body>
+    <el-dialog :title="'权限管理 · ' + (currentUser && currentUser.player)" :visible.sync="permOpen" width="640px">
       <el-form :inline="true" style="margin-bottom:10px">
         <el-form-item label="权限节点">
           <el-input v-model="permInput" placeholder="如 soyshttp.page.home；'-' 前缀 = 否定；':' 等同 '.'" clearable size="small" style="width: 360px" @keyup.enter.native="submitPermAdd" />
@@ -86,7 +86,7 @@
     </el-dialog>
 
     <!-- ============ 权限组（多选） ============ -->
-    <el-dialog :title="'权限组 · ' + (currentUser && currentUser.player)" :visible.sync="groupOpen" width="480px" append-to-body>
+    <el-dialog :title="'权限组 · ' + (currentUser && currentUser.player)" :visible.sync="groupOpen" width="480px">
       <el-select v-model="userGroupIds" multiple placeholder="选择该用户所属的权限组" style="width: 100%">
         <el-option v-for="g in allGroups" :key="g.id" :label="(g.display || g.id) + ' (' + g.id + ')'" :value="g.id" />
       </el-select>
@@ -97,7 +97,7 @@
     </el-dialog>
 
     <!-- ============ 分配 X-API-KEY ============ -->
-    <el-dialog :title="'分配 X-API-KEY · ' + (currentUser && currentUser.player)" :visible.sync="assignOpen" width="520px" append-to-body>
+    <el-dialog :title="'分配 X-API-KEY · ' + (currentUser && currentUser.player)" :visible.sync="assignOpen" width="520px">
       <div v-if="!assignResult">
         <el-alert type="warning" :closable="false" title="点击生成后将为该用户生成一个新的 X-API-KEY 并立即绑定。" style="margin-bottom: 12px" />
         <el-button type="primary" icon="el-icon-key" :loading="assignLoading" @click="submitAssignKey">生成并绑定</el-button>
@@ -118,7 +118,7 @@
     </el-dialog>
 
     <!-- ============ 权限时间延期 ============ -->
-    <el-dialog :title="'权限时间延期 · ' + (currentUser && currentUser.player)" :visible.sync="expiryOpen" width="480px" append-to-body>
+    <el-dialog :title="'权限时间延期 · ' + (currentUser && currentUser.player)" :visible.sync="expiryOpen" width="480px">
       <el-form label-width="90px">
         <el-form-item label="过期时间">
           <el-date-picker v-model="expiryValue" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择权限过期时间" style="width: 100%" />

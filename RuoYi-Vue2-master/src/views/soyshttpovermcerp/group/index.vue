@@ -38,7 +38,7 @@
     <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList" />
 
     <!-- ============ 新增 / 编辑组 ============ -->
-    <el-dialog :title="form.id ? '编辑权限组' : '新增权限组'" :visible.sync="formOpen" width="480px" append-to-body>
+    <el-dialog :title="form.id ? '编辑权限组' : '新增权限组'" :visible.sync="formOpen" width="480px">
       <el-form ref="groupForm" :model="form" :rules="formRules" label-width="90px">
         <el-form-item label="组ID" prop="id">
           <el-input v-model="form.id" :disabled="!!form.originId" placeholder="小写字母/数字，创建后不可修改" />
@@ -63,7 +63,7 @@
     </el-dialog>
 
     <!-- ============ 权限管理（含组间批量复制） ============ -->
-    <el-dialog :title="'权限管理 · ' + (currentGroup && (currentGroup.display || currentGroup.id))" :visible.sync="permOpen" width="680px" append-to-body>
+    <el-dialog :title="'权限管理 · ' + (currentGroup && (currentGroup.display || currentGroup.id))" :visible.sync="permOpen" width="680px">
       <el-divider content-position="left">当前组权限</el-divider>
       <el-form :inline="true" style="margin-bottom:10px">
         <el-form-item label="权限节点">
@@ -100,7 +100,7 @@
     </el-dialog>
 
     <!-- ============ 成员管理 ============ -->
-    <el-dialog :title="'成员管理 · ' + (currentGroup && (currentGroup.display || currentGroup.id))" :visible.sync="memberOpen" width="520px" append-to-body>
+    <el-dialog :title="'成员管理 · ' + (currentGroup && (currentGroup.display || currentGroup.id))" :visible.sync="memberOpen" width="520px">
       <el-form :inline="true" style="margin-bottom:10px">
         <el-form-item label="玩家名">
           <el-input v-model="memberPlayer" placeholder="输入玩家名加入该组" clearable size="small" style="width: 240px" @keyup.enter.native="submitMemberAdd" />

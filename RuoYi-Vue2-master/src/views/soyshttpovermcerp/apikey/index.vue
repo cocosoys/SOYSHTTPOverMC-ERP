@@ -59,7 +59,7 @@
     <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList" />
 
     <!-- ============ 生成 KEY ============ -->
-    <el-dialog title="生成 X-API-KEY" :visible.sync="generateOpen" width="540px" append-to-body>
+    <el-dialog title="生成 X-API-KEY" :visible.sync="generateOpen" width="540px">
       <div v-if="!genResult">
         <el-form label-width="80px">
           <el-form-item label="备注">
@@ -84,7 +84,7 @@
     </el-dialog>
 
     <!-- ============ 权限管理 ============ -->
-    <el-dialog :title="'权限管理 · ' + (currentKey && currentKey.fingerprint)" :visible.sync="permOpen" width="620px" append-to-body>
+    <el-dialog :title="'权限管理 · ' + (currentKey && currentKey.fingerprint)" :visible.sync="permOpen" width="620px">
       <el-form :inline="true" style="margin-bottom:10px">
         <el-form-item label="权限节点">
           <el-input v-model="permInput" placeholder="如 soyshttp.api.*；'-' 前缀 = 否定" clearable size="small" style="width: 340px" @keyup.enter.native="submitPermAdd" />
@@ -110,7 +110,7 @@
     </el-dialog>
 
     <!-- ============ 绑定 / 解绑 ============ -->
-    <el-dialog :title="'绑定 · ' + (currentKey && currentKey.fingerprint)" :visible.sync="bindOpen" width="460px" append-to-body>
+    <el-dialog :title="'绑定 · ' + (currentKey && currentKey.fingerprint)" :visible.sync="bindOpen" width="460px">
       <div v-if="!currentKey || !currentKey.uuid">
         <el-form label-width="80px">
           <el-form-item label="玩家名">
@@ -126,7 +126,7 @@
     </el-dialog>
 
     <!-- ============ 过期设置 ============ -->
-    <el-dialog :title="'过期设置 · ' + (currentKey && currentKey.fingerprint)" :visible.sync="expiryOpen" width="460px" append-to-body>
+    <el-dialog :title="'过期设置 · ' + (currentKey && currentKey.fingerprint)" :visible.sync="expiryOpen" width="460px">
       <el-form label-width="90px">
         <el-form-item label="过期时间">
           <el-date-picker v-model="expiryValue" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择过期时间" style="width: 100%" />

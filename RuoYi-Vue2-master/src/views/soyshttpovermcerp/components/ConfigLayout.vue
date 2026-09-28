@@ -44,7 +44,6 @@
  * 到 helpMap（yml 注释）中模糊匹配，汇总显示在右侧固定面板中。
  */
 import ConfigTopBar from './ConfigTopBar.vue'
-import { loadConfigHelp } from '@/api/erp'
 
 const TOPBAR_H = 52 // 与 ConfigTopBar 高度一致，scrollSpy/scrollTo 用此偏移
 
@@ -57,13 +56,13 @@ export default {
     dirty: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     saving: { type: Boolean, default: false },
-    hideTopBar: { type: Boolean, default: false }
+    hideTopBar: { type: Boolean, default: false },
+    helpMap: { type: Object, default: () => ({}) }
   },
   data() {
     return {
       anchors: [],
       activeId: '',
-      helpMap: {},
       activeHelp: []
     }
   },
@@ -79,7 +78,6 @@ export default {
   },
   mounted() {
     this.buildAnchors()
-    this.loadHelp()
     setTimeout(() => { this.buildAnchors() }, 500)
   },
   beforeDestroy() {

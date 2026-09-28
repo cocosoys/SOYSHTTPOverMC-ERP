@@ -72,6 +72,14 @@ module.exports = {
         '@': resolve('src')
       }
     },
+    // externals：基础库不打包，运行时从主插件公共资源加载（wujie externals 注入）
+    // 源代码完全不变，只是打包时不把这些库打进去
+    externals: {
+      'vue': 'Vue',
+      'vuex': 'Vuex',
+      'vue-router': 'VueRouter',
+      'element-ui': 'ELEMENT'
+    },
     plugins: [
       // http://doc.ruoyi.vip/ruoyi-vue/other/faq.html#使用gzip解压缩静态文件
       new CompressionPlugin({
