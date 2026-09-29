@@ -68,7 +68,7 @@
             <div class="hint">访问端口=MC 端口，在 Spigot 监听上嗅探 HTTP，MC/HTTP/HTTPS 三协议共用端口。</div>
           </el-form-item>
           <el-form-item label="请求体上限（字节）">
-            <el-input-number v-model="model.sniffer['max-body-bytes']" :step="1048576" />
+            <byte-converter v-model="model.sniffer['max-body-bytes']" />
             <div class="hint">超过返回 413，默认 8MB。</div>
           </el-form-item>
           <el-form-item label="HTTP 并发上限">
@@ -229,11 +229,12 @@
 <script>
 import configPage from '../mixins/configPage'
 import ConfigLayout from '../components/ConfigLayout.vue'
+import ByteConverter from '../components/ByteConverter.vue'
 
 export default {
   name: 'SettingsMain',
   mixins: [configPage],
-  components: { ConfigLayout },
+  components: { ConfigLayout, ByteConverter },
   data() {
     return {
       fileId: 'config',

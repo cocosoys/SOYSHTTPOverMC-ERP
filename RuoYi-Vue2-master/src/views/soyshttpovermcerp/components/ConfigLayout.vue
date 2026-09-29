@@ -47,6 +47,9 @@ import ConfigTopBar from './ConfigTopBar.vue'
 
 const TOPBAR_H = 52 // 与 ConfigTopBar 高度一致，scrollSpy/scrollTo 用此偏移
 
+// 表格纯操作列（无配置语义），帮助面板扫描时跳过
+const ConfigLayoutIgnoreCol = new Set(['操作', '删', '删除', '更多'])
+
 export default {
   name: 'ConfigLayout',
   components: { ConfigTopBar },
@@ -170,7 +173,7 @@ export default {
         sc.scrollTo({ top: target, behavior: 'smooth' })
       }
     },
-    /** 根据 activeId 找到对应的 DOM 节，扫描其内 form-item label，匹配 helpMap */
+    /** 根据 activeId 找到对应的 DOM 节，扫描其内 form-item label / 表格列头，匹配 helpMap */
     refreshActiveHelp() {
       if (!this.activeId || !this.helpMap || !Object.keys(this.helpMap).length) return
       const el = document.getElementById(this.activeId)
@@ -178,19 +181,32 @@ export default {
       // 如果是子电梯（divider），帮助范围从 divider 到下一个 divider 或 card 末尾
       // 如果是主电梯（card），帮助范围是整个 card
       let scope = el
+      let isDivider = false
       if (el.classList && el.classList.contains('el-divider')) {
         scope = this.collectDividerScope(el)
+        isDivider = true
       }
-      const labels = scope.querySelectorAll('.el-form-item__label')
       const items = []
       const seen = new Set()
-      labels.forEach(lb => {
-        const txt = (lb.textContent || '').trim()
+      const collect = (txt) => {
         if (!txt || seen.has(txt)) return
-        seen.add(txt)
         const hit = this.matchHelp(txt)
-        if (hit) items.push({ key: txt, val: hit })
+        if (hit) { seen.add(txt); items.push({ key: txt, val: hit }) }
+      }
+      // 1) 普通表单 label（el-form-item）
+      scope.querySelectorAll('.el-form-item__label').forEach(lb => collect((lb.textContent || '').trim()))
+      // 2) 表格列头（el-table），跳过纯操作列
+      scope.querySelectorAll('.el-table__header .cell').forEach(c => {
+        const txt = (c.textContent || '').trim()
+        if (ConfigLayoutIgnoreCol.has(txt)) return
+        collect(txt)
       })
+      // 3) 卡片节内没有任何可扫描 label 时，回退用卡片标题（header）匹配 helpMap，
+      //    覆盖纯表格/动态行/纯文本类配置节（如“IP / CIDR 列表”、“自动路由”）
+      if (!items.length && !isDivider && el.classList && el.classList.contains('el-card')) {
+        const header = el.querySelector('.el-card__header')
+        if (header) collect(header.textContent.trim())
+      }
       this.activeHelp = items
     },
     /** divider 的作用域：从 divider 到下一个 divider（或 card 结束） */

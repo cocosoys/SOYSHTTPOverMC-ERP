@@ -87,7 +87,7 @@ export default {
         'Cookie（颁发器校验）': '是否接受 Cookie（由启用的颁发器如 session-token 校验）。',
         '记住我总开关': '记住我（设备免登录）总开关。登录时勾选则签发长期设备 Cookie（soys_remember），后续自动登录。',
         '记住我有效期（天）': '记住我凭证有效期（天），默认 7。',
-        'IP 匹配自动登录': '旧行为：游戏在线且网页 IP==游戏 IP 即放行。同 NAT 会误伤他人，仅局域网/单机建议开。',
+        'IP 匹配自动登录': '旧“IP 匹配免登录”开关（对应 gateway/policies/auth.yml 的 auto.login.ip.enabled，默认 false）：false=关闭（默认）——不再按“游戏在线 + 网页 IP==游戏 IP”自动登录，因为 IP 无法精准到个人设备，同 NAT 下会误伤他人；true=保留旧行为，仅建议局域网/单机环境开启。',
         'local 不可用时放行全部': 'false=安全优先（local 不可用时 403）；true=fail-open 退化为全权限，仅信任内网使用。'
       }
     }
