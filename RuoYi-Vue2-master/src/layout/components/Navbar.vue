@@ -29,9 +29,12 @@
           <el-dropdown-item @click.native="setLayout" v-if="setting">
             <span>布局设置</span>
           </el-dropdown-item>
+          <!-- 锁定屏幕（暂未启用，注释保留） -->
+          <!--
           <el-dropdown-item @click.native="lockScreen">
             <span>锁定屏幕</span>
           </el-dropdown-item>
+          -->
           <el-dropdown-item divided @click.native="logout">
             <span>退出登录</span>
           </el-dropdown-item>

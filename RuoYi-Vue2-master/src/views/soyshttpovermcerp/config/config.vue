@@ -172,9 +172,6 @@
           <el-form-item label="数据库文件">
             <el-input v-model="model.storage.backends.sqlite.file" />
           </el-form-item>
-          <el-form-item label="表前缀">
-            <el-input v-model="model.storage.backends.sqlite['table-prefix']" />
-          </el-form-item>
 
           <el-divider content-position="left">MySQL 后端</el-divider>
           <el-form-item label="启用 MySQL">
@@ -188,9 +185,6 @@
           </el-form-item>
           <el-form-item label="密码">
             <el-input v-model="model.storage.backends.mysql.password" show-password />
-          </el-form-item>
-          <el-form-item label="表前缀">
-            <el-input v-model="model.storage.backends.mysql['table-prefix']" />
           </el-form-item>
 
           <el-divider content-position="left">跨服同步</el-divider>
@@ -268,7 +262,6 @@ export default {
         '保存时备份': '保存时是否自动备份旧文件。',
         '启用 SQLite': 'SQLite 后端（默认禁用）。1.12.2 服务端自带驱动直接可用。适合中等数据量。',
         '数据库文件': 'SQLite 数据库文件路径，默认 data/records.db。',
-        '表前缀': '创建表的前缀，若无特殊要求请勿修改，避免开发者无法获取到正确的表名称。',
         '启用 MySQL': 'MySQL 后端（默认禁用；与 SQLite 可同时启用）。priority 最高者为主存储（MYSQL 30 > SQLITE 20 > YAML 10）。适合大数据量、跨服共享场景。',
         'JDBC URL': 'MySQL 连接 URL，含数据库名、编码、时区等参数。示例：jdbc:mysql://localhost:3306/minecraft?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai',
         '用户名': 'MySQL 数据库用户名。',

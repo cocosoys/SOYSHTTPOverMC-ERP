@@ -98,10 +98,11 @@ public class SoysErpExpansion extends McerpExpansion {
                                     .perms("soyshttpovermc:erp:config:list")
                                     .orderNum(i);
                         }
-                    });
+                    }).perms("soyshttpovermc:erp:config:list");
                 })
                 // 配置管理端点按钮（files/load/save）自动挂到"插件配置"dir 下
                 .permsFrom(SoysConfigController.class)
+                .perms("soyshttpovermc:erp:config:list")
                 .orderNum(40);
     }
 
