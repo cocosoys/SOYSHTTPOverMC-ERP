@@ -15,16 +15,6 @@
         </el-form>
       </el-card>
 
-      <el-card shadow="never" class="mb" id="sec-channel">
-        <div slot="header">插件消息通道</div>
-        <el-form label-width="180px" size="small">
-          <el-form-item label="channel">
-            <el-input v-model="model.channel" />
-            <div class="hint">Bukkit 插件消息通道名，默认 httpproxy:main。</div>
-          </el-form-item>
-        </el-form>
-      </el-card>
-
       <el-card shadow="never" class="mb" id="sec-mc">
         <div slot="header">MC 服务器地址与端口</div>
         <el-form label-width="180px" size="small">
@@ -235,7 +225,6 @@ export default {
       helpMap: {
         '启用数据贡献': '是否同意将当前服务器的公网地址（IP:端口，如 127.0.0.1:25564）匿名贡献给 cocosoys 的数据服务器，仅用于让 cocosoys 进行数据统计（如插件用量、地域分布）。本质为向 upload.server 发送一个 POST 请求，请求体只携带 IP 与端口。我们承诺该地址仅用于统计，不会暴露详细数据给任何第三方或个人。若你存在顾虑请禁用它。',
         '统计上报服务器': '数据上报的 POST 请求地址，默认 https://api.cocosoys.com/report。仅当启用数据贡献为 true 时生效。',
-        'channel': 'Bukkit 插件消息通道名，默认 httpproxy:main。用于插件间跨服通信（BungeeCord channel）。一般无需修改，除非与其他插件通道名冲突。',
         'host': 'MC 服务器监听地址。留空（默认）则自动取 server.properties 的 server-ip（为空再回退 127.0.0.1）。已显式填写的值优先。',
         'port': 'MC 服务器端口。必须等于 Spigot server.properties 的 server-port（即"服务器端口"）。留 0（默认）则自动取 server.properties 的 server-port（再回退运行期端口）。无需另配端口、无需挪窝。',
         'public-host': '群组服（BungeeCord/Waterfall/Velocity）下对外公布的「公网地址」覆盖。留空则沿用上面的 host。当后端端口需经代理对外、或后端绑定内网而客户端应连代理公网地址时，在此填客户端实际可达的 host。仅影响对外连接信息（/send 链接、状态页显示的地址），不改变 HTTP 后端连接本服的地址。',
