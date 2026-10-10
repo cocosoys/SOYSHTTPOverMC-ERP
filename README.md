@@ -2,7 +2,7 @@
 
 > SOYSHTTPOverMC 的 ERP 管理台扩展插件 —— 以 MCERP 管理台为宿主，提供游戏用户 / 权限组 / X-API-KEY / 插件配置 / 语言包的可视化管理界面。
 
-[![version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](https://github.com/cocosoys/SOYSHTTPOverMC-ERP/releases)
+[![version](https://img.shields.io/badge/version-1.4.1-brightgreen.svg)](https://github.com/cocosoys/SOYSHTTPOverMC-ERP/releases)
 [![java](https://img.shields.io/badge/java-8-blue.svg)](#构建)
 [![platform](https://img.shields.io/badge/spigot-1.12.2-lightgrey.svg)](#兼容性)
 
@@ -27,7 +27,7 @@ MCERP（管理台宿主：登录鉴权 / 菜单路由 / 侧边栏 / TagsView）
 SOYSHTTPOverMC-ERP（本插件：声明菜单树 + 控制器转发，无业务实现层重复）
 ```
 
-- **后端**：Java 8，`com.github.cocosoys.mc:SOYSHTTPOverMC-ERP:1.0-SNAPSHOT`，shade 打包为单个 jar。
+- **后端**：Java 8，版本号跟随主插件 SOYSHTTPOverMC（当前 1.4.1），shade 打包为单个 jar。
 - **前端**：Vue 2.6 + Element UI 2.15（RuoYi-Vue2 剪裁版），`npm run build:prod` 产物打入 `src/main/resources/dist`，随 jar 分发，无需独立部署 Web 服务器。
 
 ---
@@ -51,6 +51,8 @@ SOYSHTTPOverMC-ERP（本插件：声明菜单树 + 控制器转发，无业务�
 | 权限组保存 | `POST /erp/user/groups` | `soyshttpovermc:erp:user:group:edit` | 修改用户所属权限组 |
 | 分配 X-API-KEY | `POST /erp/user/assign-key` | `soyshttpovermc:erp:user:apikey:assign` | 直接为该用户生成新 X-API-KEY 并绑定 |
 | 用户级权限延期 | `POST /erp/user/expiry` | `soyshttpovermc:erp:user:perm:renew` | 延长用户个人权限到期时间，或设为永久 |
+| 查看票据 | 跳转 `/erp/sso-ticket?subject=<玩家名>` | （复用 sso-ticket 菜单权限） | 按玩家名筛选该用户的 SSO 登录票据 |
+| 查看设备 | 跳转 `/erp/device-binding?player=<玩家名>` | （复用 device-binding 菜单权限） | 按玩家名筛选该用户的设备绑定记录 |
 
 列表查询：`GET /erp/user/list?pageNum=&pageSize=&keyword=`（若依 `TableDataInfo` 分页契约）。
 
@@ -126,6 +128,34 @@ SOYSHTTPOverMC-ERP（本插件：声明菜单树 + 控制器转发，无业务�
 - **ByteConverter**：字节单位转换器。左侧固定字节输入，右侧选单位（KB/MB/GB 等）后点转换图标双向换算，解决"文件大小 / 缓冲区字节"类配置项的手算负担。
 - **电梯导航**：基于 `IntersectionObserver` 自动识别当前滚动到的配置分组并高亮，支持子分组嵌套；右侧帮助说明面板独立滚动。
 
+### 6. 安全审计（目录 `audit`）
+
+操作主插件 1.4.1 新增的两张系统自动写入的审计表。这两张表**不提供"新增"按钮**——票据由 SSO 回跳链路自动签发，设备由玩家勾选"记住我"后自动写入，运维侧只做只读查看与清理/吊销。
+
+#### 6.1 SSO 票据记录（菜单 `audit/sso-ticket`）
+
+操作主插件 `soys_sso_ticket` 表：跨域 SSO 一次性登录票据（ticket / subject / redirect_url / issued_server / client_ip / consumed_at / expires_at，TTL 默认 60s，消费不删行只置 `consumed_at`）。
+
+| 功能 | 端点 | 权限节点 |
+|---|---|---|
+| 票据列表分页 | `GET /erp/sso-ticket/list`（支持 keyword/subject/status/from/to 筛选） | `soyshttpovermc:erp:sso-ticket:list` |
+| 批量清理 | `POST /erp/sso-ticket/clean`（mode=expired/consumed/all） | `soyshttpovermc:erp:sso-ticket:clean` |
+| 单条删除 | `POST /erp/sso-ticket/remove` | `soyshttpovermc:erp:sso-ticket:remove` |
+
+列表列：票据串（自动撑满）/ 玩家 / 签发服 / 客户端 IP / 状态（未消费/已消费/已过期）/ 过期时间 / 消费时间 / 创建时间。过期与已消费行由读取方惰性清理，长期不清理会导致 YAML 后端数据文件膨胀，建议定期跑"批量清理（all）"。
+
+#### 6.2 设备绑定管理（菜单 `audit/device-binding`）
+
+操作主插件 `soys_device_binding` 表：玩家"记住我"写入的设备指纹绑定（id / player / uuid / fingerprint_hash / device_label / last_ip / last_bind_at / revoked，仅存 SHA-256 哈希，不存原始指纹）。
+
+| 功能 | 端点 | 权限节点 |
+|---|---|---|
+| 绑定列表分页 | `GET /erp/device-binding/list`（支持 keyword/player/revoked 筛选） | `soyshttpovermc:erp:device-binding:list` |
+| 吊销 / 恢复切换 | `POST /erp/device-binding/toggle`（revoked 0↔1） | `soyshttpovermc:erp:device-binding:toggle` |
+| 删除绑定 | `POST /erp/device-binding/remove` | `soyshttpovermc:erp:device-binding:remove` |
+
+吊销后该设备的自动登录立即失效；删除则彻底清除绑定记录。
+
 ---
 
 ## 权限节点
@@ -146,6 +176,9 @@ SOYSHTTPOverMC-ERP（本插件：声明菜单树 + 控制器转发，无业务�
 | `soyshttpovermc:erp:apikey:perm:list` / `:add` / `:remove` | op | KEY 权限管理 |
 | `soyshttpovermc:erp:config:list` / `:query` / `:edit` | op | 配置文件查看 / 读取 / 保存 |
 | `soyshttpovermc:erp:lang:list` / `:query` / `:edit` | op | 语言文件查看 / 读取 / 保存 |
+| `soyshttpovermc:erp:audit:menu` | op | 安全审计目录可见 |
+| `soyshttpovermc:erp:sso-ticket:list` / `:clean` / `:remove` | op | SSO 票据列表 / 批量清理 / 删除 |
+| `soyshttpovermc:erp:device-binding:list` / `:toggle` / `:remove` | op | 设备绑定列表 / 吊销切换 / 删除 |
 
 ---
 
@@ -196,7 +229,7 @@ cd ..
 mvn clean package -DskipTests
 ```
 
-产物：`target/SOYSHTTPOverMC-ERP-1.0-SNAPSHOT.jar`。
+产物：`target/SOYSHTTPOverMC-ERP-<主插件版本>.jar`（版本号跟随 `soys.version` 属性，当前为 `1.4.1`）。
 
 ---
 

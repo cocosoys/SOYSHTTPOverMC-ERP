@@ -127,3 +127,25 @@ export function saveLangEntries(file, entries) {
   return request({ url: '/erp/lang/save', method: 'post', params: { file }, data: entries })
 }
 
+/* ================= SSO 票据记录（安全审计） ================= */
+export function listSsoTicket(params) {
+  return request({ url: '/erp/sso-ticket/list', method: 'get', params })
+}
+export function cleanSsoTicket(mode) {
+  return request({ url: '/erp/sso-ticket/clean', method: 'post', data: { mode } })
+}
+export function removeSsoTicket(id) {
+  return request({ url: '/erp/sso-ticket/remove', method: 'post', data: { id } })
+}
+
+/* ================= 设备绑定管理（安全审计） ================= */
+export function listDeviceBinding(params) {
+  return request({ url: '/erp/device-binding/list', method: 'get', params })
+}
+export function toggleDeviceBinding(id) {
+  return request({ url: '/erp/device-binding/toggle', method: 'post', data: { id } })
+}
+export function removeDeviceBinding(id) {
+  return request({ url: '/erp/device-binding/remove', method: 'post', data: { id } })
+}
+

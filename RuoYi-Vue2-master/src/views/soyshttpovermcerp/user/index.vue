@@ -47,12 +47,14 @@
           <span v-if="!scope.row.groups || !scope.row.groups.length" style="color:#909399">—</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="440" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" icon="el-icon-lock" @click="openPermDialog(scope.row)">权限</el-button>
           <el-button size="mini" type="success" icon="el-icon-user" @click="openGroupDialog(scope.row)">权限组</el-button>
           <el-button size="mini" type="warning" icon="el-icon-key" @click="openAssignKeyDialog(scope.row)">分配KEY</el-button>
           <el-button size="mini" type="info" icon="el-icon-time" @click="openExpiryDialog(scope.row)">延期</el-button>
+          <el-button size="mini" type="text" icon="el-icon-document" @click="goSsoTicket(scope.row)">票据</el-button>
+          <el-button size="mini" type="text" icon="el-icon-mobile-phone" @click="goDeviceBinding(scope.row)">设备</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -172,6 +174,14 @@ export default {
     this.getList()
   },
   methods: {
+    /** 跳转 SSO 票据记录（按玩家名筛选） */
+    goSsoTicket(row) {
+      this.$router.push({ path: '/soyshttpovermcerp/audit/sso-ticket', query: { subject: row.player } })
+    },
+    /** 跳转设备绑定管理（按玩家名筛选） */
+    goDeviceBinding(row) {
+      this.$router.push({ path: '/soyshttpovermcerp/audit/device-binding', query: { player: row.player } })
+    },
     /** 查询用户列表 */
     getList() {
       this.loading = true

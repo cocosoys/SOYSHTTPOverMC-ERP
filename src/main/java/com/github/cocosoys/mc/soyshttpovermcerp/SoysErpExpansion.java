@@ -5,20 +5,26 @@ import com.github.cocosoys.mc.mcerp.McerpExpansion;
 import com.github.cocosoys.mc.soyshttpovermc.api.SoysHttpOverMcApi;
 import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysApiKeyController;
 import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysConfigController;
+import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysDeviceBindingController;
 import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysLangController;
 import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysPermGroupController;
 import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysPermUserController;
+import com.github.cocosoys.mc.soyshttpovermcerp.controller.SoysSsoTicketController;
 import com.github.cocosoys.mc.soyshttpovermcerp.entity.SoysConfigFile;
 import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysApiKeyServiceImpl;
 import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysConfigServiceImpl;
+import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysDeviceBindingServiceImpl;
 import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysLangServiceImpl;
 import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysPermGroupServiceImpl;
 import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysPermUserServiceImpl;
+import com.github.cocosoys.mc.soyshttpovermcerp.impl.SoysSsoTicketServiceImpl;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysApiKeyService;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysConfigService;
+import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysDeviceBindingService;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysLangService;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysPermGroupService;
 import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysPermUserService;
+import com.github.cocosoys.mc.soyshttpovermcerp.service.SoysSsoTicketService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +81,18 @@ public class SoysErpExpansion extends McerpExpansion {
                 .orderNum(30)
                 .menu("lang", "语言管理", "language", SoysLangController.class)
                 .perms("soyshttpovermc:erp:lang:list")
-                .orderNum(35)
+                .orderNum(40)
+                // 安全审计 dir：SSO 票据记录 + 设备绑定管理（均为系统自动写入的审计/运维表）
+                .dir("audit", "安全审计", "validCode", d -> {
+                    d.menu("sso-ticket", "SSO 票据记录", "form", SoysSsoTicketController.class)
+                            .perms("soyshttpovermc:erp:sso-ticket:list")
+                            .orderNum(10);
+                    d.menu("device-binding", "设备绑定管理", "monitor", SoysDeviceBindingController.class)
+                            .perms("soyshttpovermc:erp:device-binding:list")
+                            .orderNum(20);
+                })
+                .perms("soyshttpovermc:erp:audit:menu")
+                .orderNum(50)
                 // 插件配置 dir：按 SoysConfigFile.values() 逐个登记文件级菜单，点击直达对应配置文件
                 .dir("config", "插件配置", "edit", d -> {
                     for (int i = 0; i < SoysConfigFile.values().length; i++) {
@@ -103,7 +120,7 @@ public class SoysErpExpansion extends McerpExpansion {
                 // 配置管理端点按钮（files/load/save）自动挂到"插件配置"dir 下
                 .permsFrom(SoysConfigController.class)
                 .perms("soyshttpovermc:erp:config:list")
-                .orderNum(40);
+                .orderNum(60);
     }
 
     @Override
@@ -114,12 +131,16 @@ public class SoysErpExpansion extends McerpExpansion {
         SoysApiKeyService apiKeyService = new SoysApiKeyServiceImpl();
         SoysConfigService configService = new SoysConfigServiceImpl();
         SoysLangService langService = new SoysLangServiceImpl();
+        SoysSsoTicketService ssoTicketService = new SoysSsoTicketServiceImpl();
+        SoysDeviceBindingService deviceBindingService = new SoysDeviceBindingServiceImpl();
         List<Object> list = new ArrayList<>();
         list.add(new SoysPermUserController(userService));
         list.add(new SoysPermGroupController(groupService));
         list.add(new SoysApiKeyController(apiKeyService));
         list.add(new SoysConfigController(configService));
         list.add(new SoysLangController(langService));
+        list.add(new SoysSsoTicketController(ssoTicketService));
+        list.add(new SoysDeviceBindingController(deviceBindingService));
         return list;
     }
 

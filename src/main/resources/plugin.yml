@@ -32,3 +32,18 @@ permissions:
   soyshttpovermc.erp.config.edit:
     description: 配置文件保存
     default: op
+  soyshttpovermc.erp.audit.menu:
+    description: 安全审计目录访问
+    default: op
+  soyshttpovermc.erp.sso-ticket.list:
+    description: SSO 票据记录查看
+    default: op
+  soyshttpovermc.erp.sso-ticket.clean:
+    description: SSO 票据批量清理/删除
+    default: op
+  soyshttpovermc.erp.device-binding.list:
+    description: 设备绑定列表查看
+    default: op
+  soyshttpovermc.erp.device-binding.manage:
+    description: 设备绑定吊销/恢复/删除
+    default: op
